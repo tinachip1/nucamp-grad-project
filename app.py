@@ -1,12 +1,10 @@
 import sqlite3
 from flask import Flask, render_template, request, session
-#from forms import SkaterInfo
-
-
+import os
 
 
 app = Flask(__name__)
-#app.secret_key = "4E8C15F8-E962-4DA5-8C81-ADB837B67D52"
+app.secret_key = "4E8C15F8-E962-4DA5-8C81-ADB837B67D52"
 
 
 
@@ -14,21 +12,29 @@ app = Flask(__name__)
 def home():
     return render_template("form.html")
 
-@app.route("/userrec/", methods=["POST", "GET"])
+def db_connection():
+    conn = None
+    try:
+        conn = sqlite3.connect("skaterecommendations.db")
+    except sqlite3.error as e:
+        print(e)
+    return conn
+
+@app.route("/userrec/", methods=["POST"])
 def userrec():
+    conn = db_connection()
+    cursor = conn.cursor()
+
     if request.method == "POST":
         try:
             username = request.form["username"]
             email = request.form["email"]
             skating_style = request.form["skating_style"]
 
-            with sqlite3.connect("skaterecommendations.db") as conn:
-                cur = conn.cursor()
+            conn.execute("INSERT INTO skaters (username, email, skating_style) VALUES (?,?,?)",(username, email, skating_style))
 
-                cur.execute("INSERT INTO skaters (username, email, skating_style) VALUES (?,?,?)",(username, email, skating_style))
-
-                conn.commit()
-                msg = "Record successfully added"
+            conn.commit()
+            msg = "Record successfully added"
         except:
             conn.rollback()
             msg = "Error in insert operation"
@@ -36,24 +42,8 @@ def userrec():
         finally:
             return render_template("result.html", msg = msg)
             conn.close()
-
-
-@app.route("/input")
-def input():
-    skating_style=sqlite3.execute("SELECT skating_style FROM skating_style")
-    return render_template("form.html",cityList=skating_style )
-    # conn =  sqlite3.connect("skaterecommendations.db")
-    # cur = conn.cursor()
-
-    # cur.execute("SELECT skating_style FROM skating_style")
-
-    # rows = cur.fetchall() 
-    # for row in rows:
-    #     print(row)
-    #render template and send the set of tuples to the HTML file for displaying
-    #return render_template("form.html",skating_style=rows )
-       
+         
         
 if __name__ == '__main__':
-    app.debug = True
-    app.run()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)

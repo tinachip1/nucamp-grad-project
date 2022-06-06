@@ -1,23 +1,21 @@
 <h1>Skate Recommendations</h1>
-<form action="{{ url_for('userrec')}}" method="post">
-<label for="username">Username:</label>
-<input type="text" id="username" name="username" placeholder="username"><br>
-<label for="email">Email:</label>
-<input type="text" id="email" name="email" placeholder="email"><br>
-<!-- <label for="skating_style">Skating Style:</label>
-<input type="text" id="skating_style" name="skating_style" placeholder="skating_style">
-<button type="submit">Submit</button> -->
- 
-Choose a Skating Style<SELECT name="skating_style">
-    {% for c in skating_style %}
-        <OPTION value={{c.skating_style}}>{{c.skating_style}}</option>
-    {% endfor %}
-    </SELECT>
+<form action="{{url_for('userrec')}}" method="post">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" placeholder="username"><br>
+    <label for="email">Email:</label>
+    <input type="text" id="email" name="email" placeholder="email"><br>
+      
+    <label for="skatestyle">Choose a Skating Style. Copy and Paste from below:</label>
+    <input type="text" id="skating_style" name="skating_style" placeholder="skating_style"> 
+<button type="submit">Submit</button> <br>
+<ul>
+    <li>aggressive</li>
+    <li>derby</li>
+    <li>speed</li>
+    <li>jam</li>
+    <li>road/trail</li>
+    <li>artistic</li>
+    <li>freestyle</li>
+    <li>rink</li>
+</ul> 
 
-<!-- <p style="font-family:verdana">
-    Choose Skating Style:<SELECT name="skating_style" style="font-family:verdana">
-    {% for j in skating_style %}
-        <OPTION value={{j[0]}}>{{j[1]}}</OPTION>
-    {% endfor %}
-    </SELECT>
-    </p> -->
